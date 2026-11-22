@@ -23,7 +23,7 @@ In paired game-cluster resamples, the random forest's log loss was lower than lo
 
 The report includes the analysis, uncertainty intervals, model comparison, calibration and feature importance discussion, and limitations.
 
-[Open the project report](NBA_Shot_Outcome_Analysis.docx)
+[Open the project report](NBA_Shot_Outcome_Analysis.pdf)
 
 ## Figures and results
 
