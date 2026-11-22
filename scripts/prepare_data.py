@@ -20,6 +20,9 @@ REQUIRED_COLUMNS = {
     "SHOT_DISTANCE",
     "LOC_X",
     "LOC_Y",
+    "ACTION_TYPE",
+    "SHOT_ZONE_BASIC",
+    "SHOT_ZONE_AREA",
 }
 
 
@@ -39,10 +42,16 @@ def main() -> None:
         )
 
     seasons = []
+    seen_seasons: set[int] = set()
     for file_path in files:
         match = re.search(r"shotdetail_(\d{4})\.csv(?:\.gz)?$", file_path.name)
         if match is None:
             raise SystemExit(f"Could not read a season year from {file_path.name}")
+
+        season = int(match.group(1))
+        if season in seen_seasons:
+            raise SystemExit(f"More than one input file found for season {season}")
+        seen_seasons.add(season)
 
         frame = pd.read_csv(file_path)
         missing = REQUIRED_COLUMNS.difference(frame.columns)
@@ -50,7 +59,7 @@ def main() -> None:
             raise SystemExit(
                 f"{file_path.name} is missing required columns: {sorted(missing)}"
             )
-        frame["SEASON"] = int(match.group(1))
+        frame["SEASON"] = season
         seasons.append(frame)
 
     combined = pd.concat(seasons, ignore_index=True)

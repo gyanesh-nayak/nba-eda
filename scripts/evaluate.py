@@ -10,7 +10,9 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
+from matplotlib.ticker import PercentFormatter
 from sklearn.calibration import calibration_curve
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
@@ -43,6 +45,7 @@ REQUIRED_COLUMNS = set(
         "PERIOD",
         "MINUTES_REMAINING",
         "SECONDS_REMAINING",
+        "GAME_ID",
         "SEASON",
         TARGET,
     ]
@@ -52,10 +55,18 @@ REQUIRED_COLUMNS = set(
 
 def plot_rate_table(table: pd.DataFrame, label: str, title: str, path: Path) -> None:
     table = table.sort_values("make_rate")
-    fig, ax = plt.subplots(figsize=(8, max(4, 0.32 * len(table))))
-    ax.barh(table[label].astype(str), table["make_rate"], color="#365f91")
+    labels = [f"{name}  (n={count:,})" for name, count in zip(table[label], table["shots"])]
+    fig, ax = plt.subplots(figsize=(9, max(4, 0.34 * len(table))))
+    bars = ax.barh(labels, table["make_rate"], color="#315f86", height=0.68)
+    ax.bar_label(bars, labels=[f"{rate:.1%}" for rate in table["make_rate"]], padding=4, fontsize=8)
     ax.set(xlabel="Observed make rate", title=title, xlim=(0, 1))
-    ax.grid(axis="x", alpha=0.2)
+    ax.xaxis.set_major_formatter(PercentFormatter(1))
+    ax.set_axisbelow(True)
+    ax.grid(axis="x", alpha=0.2, linewidth=0.7)
+    ax.spines[["top", "right", "left"]].set_visible(False)
+    ax.spines["bottom"].set_color("#bbbbbb")
+    ax.tick_params(axis="y", length=0, labelsize=8)
+    ax.tick_params(axis="x", colors="#555555")
     fig.tight_layout()
     fig.savefig(path, dpi=160)
     plt.close(fig)
@@ -78,6 +89,65 @@ def readable_feature_name(name: str) -> str:
         "PERIOD": "Quarter",
         "SECONDS_REMAINING_IN_PERIOD": "Seconds left in period",
     }.get(name, name)
+
+
+def game_cluster_bootstrap(
+    y_true: pd.Series,
+    probabilities: dict[str, np.ndarray],
+    game_ids: pd.Series,
+    *,
+    replicates: int,
+    seed: int,
+) -> dict[str, dict[str, dict[str, float]]]:
+    """Estimate percentile intervals by resampling whole games with replacement."""
+    frame = pd.DataFrame({"target": y_true.to_numpy(), "game": game_ids.to_numpy()})
+    frame = frame.reset_index(drop=True)
+    if frame["game"].isna().any():
+        raise SystemExit("Validation rows are missing GAME_ID values")
+    grouped_indices = [group.index.to_numpy() for _, group in frame.groupby("game", sort=False)]
+    if len(grouped_indices) < 2:
+        raise SystemExit("Game-cluster bootstrap needs at least two validation games")
+
+    rng = np.random.default_rng(seed)
+    y = frame["target"].to_numpy()
+    draws = {
+        name: {"log_loss": [], "brier_score": []} for name in probabilities
+    }
+    for _ in range(replicates):
+        sampled_games = rng.integers(0, len(grouped_indices), size=len(grouped_indices))
+        rows = np.concatenate([grouped_indices[index] for index in sampled_games])
+        sampled_y = y[rows]
+        for name, values in probabilities.items():
+            sampled_probability = values[rows]
+            draws[name]["log_loss"].append(
+                log_loss(sampled_y, sampled_probability, labels=[0, 1])
+            )
+            draws[name]["brier_score"].append(
+                brier_score_loss(sampled_y, sampled_probability)
+            )
+
+    summary = {
+        model: {
+            metric: {
+                "lower_95": float(np.percentile(values, 2.5)),
+                "upper_95": float(np.percentile(values, 97.5)),
+            }
+            for metric, values in metric_draws.items()
+        }
+        for model, metric_draws in draws.items()
+    }
+    for comparator in ["logistic_regression", "training_prevalence_baseline"]:
+        name = f"random_forest_minus_{comparator}"
+        summary[name] = {}
+        for metric in ["log_loss", "brier_score"]:
+            differences = np.asarray(draws["random_forest"][metric]) - np.asarray(
+                draws[comparator][metric]
+            )
+            summary[name][metric] = {
+                "lower_95": float(np.percentile(differences, 2.5)),
+                "upper_95": float(np.percentile(differences, 97.5)),
+            }
+    return summary
 
 
 def make_preprocessor() -> ColumnTransformer:
@@ -104,7 +174,17 @@ def main() -> None:
     parser.add_argument("--data", type=Path, default=Path("data/processed/shots.csv"))
     parser.add_argument("--validation-season", type=int, required=True)
     parser.add_argument("--reports-dir", type=Path, default=Path("reports"))
+    parser.add_argument(
+        "--bootstrap-replicates",
+        type=int,
+        default=250,
+        help="Number of game-cluster bootstrap samples for 95%% score intervals (default: 250)",
+    )
+    parser.add_argument("--seed", type=int, default=17)
     args = parser.parse_args()
+
+    if args.bootstrap_replicates < 50:
+        raise SystemExit("Use at least 50 bootstrap replicates for interval estimation")
 
     data = pd.read_csv(args.data)
     missing = REQUIRED_COLUMNS.difference(data.columns)
@@ -204,7 +284,7 @@ def main() -> None:
             min_samples_leaf=30,
             max_features="sqrt",
             n_jobs=-1,
-            random_state=17,
+            random_state=args.seed,
         ),
     }
     results = {}
@@ -225,10 +305,18 @@ def main() -> None:
 
     prevalence = float(y_train.mean())
     baseline = [prevalence] * len(y_valid)
+    predictions["training_prevalence_baseline"] = np.asarray(baseline)
     results["training_prevalence_baseline"] = {
         "log_loss": float(log_loss(y_valid, baseline, labels=[0, 1])),
         "brier_score": float(brier_score_loss(y_valid, baseline)),
     }
+    uncertainty = game_cluster_bootstrap(
+        y_valid,
+        predictions,
+        valid["GAME_ID"],
+        replicates=args.bootstrap_replicates,
+        seed=args.seed,
+    )
 
     args.reports_dir.mkdir(parents=True, exist_ok=True)
 
@@ -245,9 +333,13 @@ def main() -> None:
     ax.barh(
         [readable_feature_name(name) for name in top_importance["feature"]],
         top_importance["importance"],
-        color="#7895b2",
+        color="#6f91ad",
     )
     ax.set(xlabel="Random forest impurity importance", title="Top 15 model features")
+    ax.set_axisbelow(True)
+    ax.grid(axis="x", alpha=0.2, linewidth=0.7)
+    ax.spines[["top", "right", "left"]].set_visible(False)
+    ax.tick_params(axis="y", length=0, labelsize=8)
     fig.tight_layout()
     fig.savefig(args.reports_dir / "feature_importance.png", dpi=160)
     plt.close(fig)
@@ -291,6 +383,24 @@ def main() -> None:
         "validation_rows": int(len(valid)),
         "training_make_rate": prevalence,
         "models": results,
+        "game_cluster_bootstrap_95_ci": uncertainty,
+        "bootstrap_replicates": args.bootstrap_replicates,
+        "random_seed": args.seed,
+        "software_versions": {
+            "pandas": pd.__version__,
+            "numpy": np.__version__,
+            "scikit_learn": __import__("sklearn").__version__,
+            "matplotlib": matplotlib.__version__,
+        },
+        "model_settings": {
+            "logistic_regression": {"C": 0.5, "max_iter": 1000},
+            "random_forest": {
+                "n_estimators": 300,
+                "min_samples_leaf": 30,
+                "max_features": "sqrt",
+                "random_state": args.seed,
+            },
+        },
         "random_forest_top_features": [
             {"feature": str(row["feature"]), "importance": float(row["importance"])}
             for _, row in forest_importance.head(15).iterrows()
@@ -300,14 +410,20 @@ def main() -> None:
     report_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
 
     fig, ax = plt.subplots(figsize=(6, 6))
-    ax.plot([0, 1], [0, 1], linestyle="--", color="gray", label="Perfect calibration")
+    ax.plot([0, 1], [0, 1], linestyle="--", color="#888888", linewidth=1.2, label="Ideal")
     for name, probabilities in predictions.items():
         observed, predicted = calibration_curve(
             y_valid, probabilities, n_bins=10, strategy="quantile"
         )
-        ax.plot(predicted, observed, marker="o", label=name.replace("_", " "))
+        ax.plot(predicted, observed, marker="o", markersize=4, linewidth=1.8, label=name.replace("_", " "))
     ax.set(xlabel="Mean predicted make probability", ylabel="Observed make rate")
     ax.set_title(f"Calibration on season {args.validation_season}")
+    ax.xaxis.set_major_formatter(PercentFormatter(1))
+    ax.yaxis.set_major_formatter(PercentFormatter(1))
+    ax.set(xlim=(0, 1), ylim=(0, 1))
+    ax.set_axisbelow(True)
+    ax.grid(alpha=0.18, linewidth=0.7)
+    ax.spines[["top", "right"]].set_visible(False)
     ax.legend()
     fig.tight_layout()
     fig.savefig(args.reports_dir / f"calibration_{args.validation_season}.png", dpi=160)

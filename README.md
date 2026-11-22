@@ -6,22 +6,24 @@ An independent portfolio analysis of NBA shot outcomes using publicly available 
 
 The analysis covers 872,168 regular-season shots across four source season labels (2021–2024). The overall make rate was 46.95%. Distance showed the clearest pattern: 61.97% of attempts from 0–5 feet were made, compared with 34.13% from 25 feet or more. Two-point shots had a 54.27% make rate and three-point shots 36.00%.
 
-I held out full seasons to check how well the probability models transferred forward. On the 2024 holdout, the random forest had log loss 0.6366 and Brier score 0.2239, compared with 0.6910 and 0.2489 for a constant-rate baseline. The logistic regression scores were 0.6419 and 0.2262. Lower is better for both metrics. This is retrospective shot-quality analysis based on recorded shot context, not a pre-shot decision model.
+I held out full seasons to check whether the probability models transferred forward. Lower scores are better. The intervals below use 250 game-cluster bootstrap samples, drawing whole games with replacement so shots from one game stay together.
 
-| Holdout season | Model | Log loss | Brier score |
+| Holdout | Model | Log loss (95% CI) | Brier score (95% CI) |
 |---|---|---:|---:|
-| 2023 | Constant-rate baseline | 0.6919 | 0.2494 |
-| 2023 | Logistic regression | 0.6428 | 0.2267 |
-| 2023 | Random forest | 0.6370 | 0.2242 |
-| 2024 | Constant-rate baseline | 0.6910 | 0.2489 |
-| 2024 | Logistic regression | 0.6419 | 0.2262 |
-| 2024 | Random forest | 0.6366 | 0.2239 |
+| 2023 | Constant-rate baseline | 0.6919 (0.6916–0.6922) | 0.2494 (0.2492–0.2495) |
+| 2023 | Logistic regression | 0.6428 (0.6414–0.6441) | 0.2267 (0.2261–0.2274) |
+| 2023 | Random forest | 0.6370 (0.6357–0.6385) | 0.2242 (0.2236–0.2249) |
+| 2024 | Constant-rate baseline | 0.6910 (0.6908–0.6913) | 0.2489 (0.2488–0.2491) |
+| 2024 | Logistic regression | 0.6419 (0.6409–0.6432) | 0.2262 (0.2257–0.2268) |
+| 2024 | Random forest | 0.6366 (0.6352–0.6381) | 0.2239 (0.2233–0.2246) |
+
+In paired game-cluster resamples, the random forest's log loss was lower than logistic regression by 0.0050–0.0063 in 2023 and 0.0046–0.0060 in 2024. These intervals quantify variation across the observed holdout games for these fitted models; they do not account for retraining or establish performance on future seasons. The model estimates make probability from recorded shot context, so it is a retrospective shot-quality analysis rather than a pre-shot decision model.
 
 ## Project report
 
-The report includes the analysis, model comparison, calibration and feature importance discussion, and limitations.
+The report includes the analysis, uncertainty intervals, model comparison, calibration and feature importance discussion, and limitations.
 
-[Open the project report](public_shot_model_report.docx)
+[Open the project report](NBA_Shot_Outcome_Analysis.docx)
 
 ## Figures and results
 
@@ -52,7 +54,7 @@ python scripts/evaluate.py --validation-season 2024
 python scripts/build_report.py
 ```
 
-The scripts write source-derived intermediate files to ignored `data/` and `reports/` folders. Generated report metrics and figures are not the internship results.
+The scripts write source-derived intermediate files to ignored `data/` and `reports/` folders. Use `--bootstrap-replicates` and `--seed` to set the uncertainty calculation and model seed. Generated report metrics and figures are not the internship results.
 
 ## Project structure
 

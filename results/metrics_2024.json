@@ -246,6 +246,78 @@
       "brier_score": 0.24893450174675052
     }
   },
+  "game_cluster_bootstrap_95_ci": {
+    "logistic_regression": {
+      "log_loss": {
+        "lower_95": 0.6408500413139858,
+        "upper_95": 0.6432196963888414
+      },
+      "brier_score": {
+        "lower_95": 0.22573626157532536,
+        "upper_95": 0.22682086309474703
+      }
+    },
+    "random_forest": {
+      "log_loss": {
+        "lower_95": 0.63524630113002,
+        "upper_95": 0.6380953794063158
+      },
+      "brier_score": {
+        "lower_95": 0.2233223747139665,
+        "upper_95": 0.22464073008418525
+      }
+    },
+    "training_prevalence_baseline": {
+      "log_loss": {
+        "lower_95": 0.6907587169724735,
+        "upper_95": 0.6912652862760288
+      },
+      "brier_score": {
+        "lower_95": 0.2488066548175035,
+        "upper_95": 0.24905964104700143
+      }
+    },
+    "random_forest_minus_logistic_regression": {
+      "log_loss": {
+        "lower_95": -0.00595870181379401,
+        "upper_95": -0.004593408152821174
+      },
+      "brier_score": {
+        "lower_95": -0.0025690600452278876,
+        "upper_95": -0.0020030406722903954
+      }
+    },
+    "random_forest_minus_training_prevalence_baseline": {
+      "log_loss": {
+        "lower_95": -0.05576839160590358,
+        "upper_95": -0.053035476448473534
+      },
+      "brier_score": {
+        "lower_95": -0.02558853730906769,
+        "upper_95": -0.02435147829213279
+      }
+    }
+  },
+  "bootstrap_replicates": 250,
+  "random_seed": 17,
+  "software_versions": {
+    "pandas": "3.1.1",
+    "numpy": "2.5.5",
+    "scikit_learn": "1.9.1",
+    "matplotlib": "3.11.2"
+  },
+  "model_settings": {
+    "logistic_regression": {
+      "C": 0.5,
+      "max_iter": 1000
+    },
+    "random_forest": {
+      "n_estimators": 300,
+      "min_samples_leaf": 30,
+      "max_features": "sqrt",
+      "random_state": 17
+    }
+  },
   "random_forest_top_features": [
     {
       "feature": "numeric__SHOT_DISTANCE",

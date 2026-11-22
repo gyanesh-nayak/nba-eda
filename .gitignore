@@ -18,7 +18,7 @@ data/
 reports/
 .pytest_cache/
 .venv/
-!public_shot_model_report.docx
+!NBA_Shot_Outcome_Analysis.docx
 !figures/
 !figures/*.png
 !results/
