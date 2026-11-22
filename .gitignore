@@ -1,0 +1,16 @@
+# Internship assessment materials: do not commit without explicit publication approval
+training.csv*
+testing.csv*
+submission.csv
+*.csv
+*.csv.gz
+*.docx
+*.pdf
+*.png
+ai_prompts.md
+project_code.py
+Code/
+time_log.txt
+~$*
+.vscode/
+__pycache__/
