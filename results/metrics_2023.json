@@ -1,0 +1,311 @@
+{
+  "data_summary": {
+    "rows": 872168,
+    "overall_make_rate": 0.4695139009915521,
+    "season_summary": [
+      {
+        "season": 2021,
+        "shots": 216722,
+        "makes": 99930,
+        "make_rate": 0.46109762737516263
+      },
+      {
+        "season": 2022,
+        "shots": 217218,
+        "makes": 103260,
+        "make_rate": 0.4753749689252272
+      },
+      {
+        "season": 2023,
+        "shots": 218701,
+        "makes": 103739,
+        "make_rate": 0.47434168110799674
+      },
+      {
+        "season": 2024,
+        "shots": 219527,
+        "makes": 102566,
+        "make_rate": 0.46721360014941216
+      }
+    ],
+    "missing_feature_values": {
+      "SHOT_DISTANCE": 0,
+      "LOC_X": 0,
+      "LOC_Y": 0,
+      "PERIOD": 0,
+      "SECONDS_REMAINING_IN_PERIOD": 0,
+      "SHOT_TYPE": 0,
+      "ACTION_TYPE": 0,
+      "SHOT_ZONE_BASIC": 0,
+      "SHOT_ZONE_AREA": 0
+    },
+    "make_rate_by_distance": [
+      {
+        "DISTANCE_BAND": "0-5 ft",
+        "shots": 311633,
+        "makes": 193105,
+        "make_rate": 0.6196551713072749
+      },
+      {
+        "DISTANCE_BAND": "5-10 ft",
+        "shots": 92293,
+        "makes": 40035,
+        "make_rate": 0.4337815435623503
+      },
+      {
+        "DISTANCE_BAND": "10-15 ft",
+        "shots": 66588,
+        "makes": 29391,
+        "make_rate": 0.4413858352856371
+      },
+      {
+        "DISTANCE_BAND": "15-20 ft",
+        "shots": 45036,
+        "makes": 18533,
+        "make_rate": 0.4115152322586375
+      },
+      {
+        "DISTANCE_BAND": "20-25 ft",
+        "shots": 224917,
+        "makes": 83484,
+        "make_rate": 0.37117692304272243
+      },
+      {
+        "DISTANCE_BAND": "25+ ft",
+        "shots": 131701,
+        "makes": 44947,
+        "make_rate": 0.3412806280893843
+      }
+    ],
+    "make_rate_by_shot_type": [
+      {
+        "SHOT_TYPE": "2PT Field Goal",
+        "shots": 522659,
+        "makes": 283655,
+        "make_rate": 0.5427152311545386
+      },
+      {
+        "SHOT_TYPE": "3PT Field Goal",
+        "shots": 349509,
+        "makes": 125840,
+        "make_rate": 0.36004795298547393
+      }
+    ],
+    "make_rate_by_zone": [
+      {
+        "SHOT_ZONE_BASIC": "Above the Break 3",
+        "shots": 259200,
+        "makes": 91581,
+        "make_rate": 0.35332175925925924
+      },
+      {
+        "SHOT_ZONE_BASIC": "Backcourt",
+        "shots": 1796,
+        "makes": 41,
+        "make_rate": 0.022828507795100223
+      },
+      {
+        "SHOT_ZONE_BASIC": "In The Paint (Non-RA)",
+        "shots": 169673,
+        "makes": 74533,
+        "make_rate": 0.4392743689331832
+      },
+      {
+        "SHOT_ZONE_BASIC": "Left Corner 3",
+        "shots": 46152,
+        "makes": 17786,
+        "make_rate": 0.38537874848327264
+      },
+      {
+        "SHOT_ZONE_BASIC": "Mid-Range",
+        "shots": 99465,
+        "makes": 41315,
+        "make_rate": 0.4153722414919821
+      },
+      {
+        "SHOT_ZONE_BASIC": "Restricted Area",
+        "shots": 253828,
+        "makes": 167925,
+        "make_rate": 0.6615700395543439
+      },
+      {
+        "SHOT_ZONE_BASIC": "Right Corner 3",
+        "shots": 42054,
+        "makes": 16314,
+        "make_rate": 0.3879298045370238
+      }
+    ],
+    "make_rate_by_common_action": [
+      {
+        "ACTION_TYPE": "Jump Shot",
+        "shots": 261256,
+        "makes": 96062,
+        "make_rate": 0.3676929907829868
+      },
+      {
+        "ACTION_TYPE": "Pullup Jump shot",
+        "shots": 104976,
+        "makes": 41077,
+        "make_rate": 0.3912989635726261
+      },
+      {
+        "ACTION_TYPE": "Driving Layup Shot",
+        "shots": 76610,
+        "makes": 36762,
+        "make_rate": 0.4798590262367837
+      },
+      {
+        "ACTION_TYPE": "Driving Floating Jump Shot",
+        "shots": 45274,
+        "makes": 19472,
+        "make_rate": 0.43009232672173875
+      },
+      {
+        "ACTION_TYPE": "Step Back Jump shot",
+        "shots": 44157,
+        "makes": 16748,
+        "make_rate": 0.37928301288583915
+      },
+      {
+        "ACTION_TYPE": "Running Layup Shot",
+        "shots": 26648,
+        "makes": 15974,
+        "make_rate": 0.5994446112278595
+      },
+      {
+        "ACTION_TYPE": "Driving Finger Roll Layup Shot",
+        "shots": 22743,
+        "makes": 14393,
+        "make_rate": 0.632854064987029
+      },
+      {
+        "ACTION_TYPE": "Layup Shot",
+        "shots": 22658,
+        "makes": 11487,
+        "make_rate": 0.506973254479654
+      },
+      {
+        "ACTION_TYPE": "Cutting Layup Shot",
+        "shots": 21800,
+        "makes": 15014,
+        "make_rate": 0.6887155963302752
+      },
+      {
+        "ACTION_TYPE": "Running Jump Shot",
+        "shots": 19961,
+        "makes": 7895,
+        "make_rate": 0.3955212664696158
+      },
+      {
+        "ACTION_TYPE": "Tip Layup Shot",
+        "shots": 18701,
+        "makes": 9071,
+        "make_rate": 0.48505427517245064
+      },
+      {
+        "ACTION_TYPE": "Floating Jump shot",
+        "shots": 16890,
+        "makes": 7733,
+        "make_rate": 0.45784487862640616
+      },
+      {
+        "ACTION_TYPE": "Fadeaway Jump Shot",
+        "shots": 16119,
+        "makes": 6278,
+        "make_rate": 0.3894782554749054
+      },
+      {
+        "ACTION_TYPE": "Putback Layup Shot",
+        "shots": 14311,
+        "makes": 9395,
+        "make_rate": 0.656488016211306
+      },
+      {
+        "ACTION_TYPE": "Turnaround Fadeaway shot",
+        "shots": 12963,
+        "makes": 5566,
+        "make_rate": 0.42937591606881126
+      }
+    ]
+  },
+  "validation_season": 2023,
+  "train_rows": 433940,
+  "validation_rows": 218701,
+  "training_make_rate": 0.4682444577591372,
+  "models": {
+    "logistic_regression": {
+      "log_loss": 0.642750149945864,
+      "brier_score": 0.22672895239609706
+    },
+    "random_forest": {
+      "log_loss": 0.6370226436148426,
+      "brier_score": 0.22419714970354168
+    },
+    "training_prevalence_baseline": {
+      "log_loss": 0.6919045199696948,
+      "brier_score": 0.24937882680420212
+    }
+  },
+  "random_forest_top_features": [
+    {
+      "feature": "numeric__SHOT_DISTANCE",
+      "importance": 0.18876072826507306
+    },
+    {
+      "feature": "numeric__LOC_Y",
+      "importance": 0.14002028292108218
+    },
+    {
+      "feature": "categorical__SHOT_ZONE_BASIC_Restricted Area",
+      "importance": 0.12110674840160265
+    },
+    {
+      "feature": "numeric__LOC_X",
+      "importance": 0.08544047206270713
+    },
+    {
+      "feature": "numeric__SECONDS_REMAINING_IN_PERIOD",
+      "importance": 0.07267115374271305
+    },
+    {
+      "feature": "categorical__SHOT_TYPE_2PT Field Goal",
+      "importance": 0.04254994397096749
+    },
+    {
+      "feature": "categorical__SHOT_ZONE_AREA_Center(C)",
+      "importance": 0.038101835902374565
+    },
+    {
+      "feature": "categorical__SHOT_TYPE_3PT Field Goal",
+      "importance": 0.03513448132340825
+    },
+    {
+      "feature": "categorical__ACTION_TYPE_Driving Layup Shot",
+      "importance": 0.031870336927838576
+    },
+    {
+      "feature": "categorical__ACTION_TYPE_Cutting Dunk Shot",
+      "importance": 0.029718635651331645
+    },
+    {
+      "feature": "categorical__ACTION_TYPE_Tip Layup Shot",
+      "importance": 0.026696048159078244
+    },
+    {
+      "feature": "categorical__SHOT_ZONE_BASIC_Above the Break 3",
+      "importance": 0.024356293432892633
+    },
+    {
+      "feature": "categorical__ACTION_TYPE_Running Dunk Shot",
+      "importance": 0.023992688935862996
+    },
+    {
+      "feature": "categorical__ACTION_TYPE_Jump Shot",
+      "importance": 0.016502610467316794
+    },
+    {
+      "feature": "numeric__PERIOD",
+      "importance": 0.014940372583895401
+    }
+  ]
+}

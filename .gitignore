@@ -17,3 +17,9 @@ __pycache__/
 data/
 reports/
 .pytest_cache/
+.venv/
+!public_shot_model_report.docx
+!figures/
+!figures/*.png
+!results/
+!results/*.json
