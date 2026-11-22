@@ -14,3 +14,6 @@ time_log.txt
 ~$*
 .vscode/
 __pycache__/
+data/
+reports/
+.pytest_cache/
